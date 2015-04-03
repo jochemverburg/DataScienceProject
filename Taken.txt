@@ -1,0 +1,3 @@
+1. Dataset Mena koppelen aan DBPedia-entries voor Ground Truth
+2. Eigen (herbruikbare) classifier maken, aan de hand van geclassificeerde tekst verder classificeren naar Spelers: CoNNL
+3. Regex verbeteren
