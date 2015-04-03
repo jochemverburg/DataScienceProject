@@ -91,7 +91,6 @@ public class QueryTest {
         QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
         ResultSet set = null;
         
-    	
     	File file = new File("resources/participants.txt");
 		BufferedReader reader = null;
 		reader = new BufferedReader(new FileReader(file));
