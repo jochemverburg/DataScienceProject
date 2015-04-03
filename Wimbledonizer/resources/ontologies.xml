@@ -1,0 +1,75 @@
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+	<!ENTITY owl  "http://www.w3.org/2002/07/owl#">
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns     ="resources/ontologies.xml#"
+>
+
+<!--http://www.daml.org/2001/01/gedcom/gedcom-->
+<!--<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Id: gedcom.daml,v 1.15 2002/09/06 15:38:18 mdean Exp $</daml:versionInfo>
+  <rdfs:comment>Ontologies for Wimbledon tennis-tournaments DAML+OIL</rdfs:comment>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+</daml:Ontology>-->
+
+<rdfs:Class rdf:ID="Wimbledon2014Player">
+	<rdfs:subClassOf rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Wimbledon2014Result">
+	<owl:Restriction>
+	  <owl:onProperty rdf:resource="#winner" />
+	  <owl:hasValue rdf:resource="F" /> <!--How to say that the hasValue has to be equal to M?-->
+	</owl:Restriction>
+    <!--<owl:Restriction>
+      <owl:onProperty rdf:resource="#winner" />
+	  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
+	  <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+    </owl:Restriction>-->
+    <!--<owl:Restriction>
+      <owl:onProperty rdf:resource="#loser"/>
+	  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
+	  <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+    </owl:Restriction>-->
+</rdfs:Class>
+
+<owl:ObjectProperty rdf:ID="winner"/>
+<owl:ObjectProperty rdf:ID="loser"/>
+
+<!--
+<owl:ObjectProperty rdf:ID="winner">
+  <rdf:type rdf:resource="&owl;FunctionalProperty" />
+  <rdfs:domain>
+    <owl:Class>    
+        <owl:Class rdf:resource="#Wimbledon2014Result"/>
+    </owl:Class>    
+  </rdfs:domain>
+  <rdfs:range>
+    <owl:Class>    
+        <owl:Class rdf:resource="#Wimbledon2014Player"/>
+    </owl:Class>    
+  </rdfs:range>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:ID="loser">
+  <rdfs:domain>
+    <owl:Class>    
+        <owl:Class rdf:resource="#Wimbledon2014Result"/>
+    </owl:Class>    
+  </rdfs:domain>
+  <rdfs:range>
+    <owl:Class>    
+        <owl:Class rdf:resource="#Wimbledon2014Player"/>
+    </owl:Class>    
+  </rdfs:range>
+  <owl:disjointWith rdf:resource="#winner"/>
+</owl:ObjectProperty>
+-->
+</rdf:RDF>
