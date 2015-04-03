@@ -137,14 +137,31 @@ public class QueryTest {
 	    }
 		result+="Counted: "+i;
 		
-		File writeFile = new File("resources/participants.nt");
-		FileOutputStream is = new FileOutputStream(writeFile);
-        OutputStreamWriter osw = new OutputStreamWriter(is);    
-        Writer w = new BufferedWriter(osw);
+        Writer w = new BufferedWriter(
+        		new OutputStreamWriter(
+        				new FileOutputStream(
+        						new File("resources/participants.nt"))));
         w.write(result);
         w.close();
         
 		return result;
+    }
+    public List<String[]> buildDefeatsGroundTruth() throws IOException{
+    	ArrayList<String[]> result=new ArrayList<String[]>();
+    	String line;
+    	BufferedReader reader = new BufferedReader(
+    			new FileReader(
+    					new File("resources/defeated.csv")));
+    	while((line = reader.readLine()) !=null ){
+    		result.add(line.split(","));
+    	}
+    	
+    	if (reader != null) {
+ 	       reader.close();
+ 	    }
+    	
+    	
+    	return result;
     }
     
     //Solution copied from http://stackoverflow.com/questions/3322152/is-there-a-way-to-get-rid-of-accents-and-convert-a-whole-string-to-regular-lette on 30-03-2015
