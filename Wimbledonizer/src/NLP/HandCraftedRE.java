@@ -38,7 +38,6 @@ public class HandCraftedRE extends TrainedNER {
 		fileContents = TweetFileReader.readTweetsWithDatestamp(tweetPath, 3);
 	}
 
-	
 	public List<Pair<String,String>> getDefeatRelation(){
 		List<Pair<String,String>> result = new ArrayList<Pair<String,String>>();
 		int scount = 0;
