@@ -6,7 +6,7 @@ public interface SemanticWebAnalyzerInterface {
 	 * 
 	 * @param name The name of the person
 	 * @param personClassPath The path of the person-class
-	 * @return Whether the person is part of that class
+	 * @return The main-entry of the associated person, or null if the person is not part of the class
 	 */
-	public boolean isOfPersonClass(String name, String personClassPath);
+	public String isOfPersonClass(String name, String personClassPath);
 }

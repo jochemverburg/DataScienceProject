@@ -61,19 +61,20 @@ public class PersonClassifier {
 				String[] splitted = text.split(COLUMN_DELIM);
 			   	if(splitted[CLASS_COLUMN].equals(PERSON_ANNOTATION)){
 			   		String entity = splitted[TOKEN_COLUMN];
-			   		String newClass = EMPTY_STRING;
+			   		String newClass = null;
+			   		String newEntity = null;
 			   		for(String personClass : classes){
-			   			if(analyzer.isOfPersonClass(entity, personClass)){
-			   				if(newClass != EMPTY_STRING){
-			   					newClass += CLASS_DELIM;
-			   				}
-			   				newClass += personClass;
+			   			String mainEntry = analyzer.isOfPersonClass(entity, personClass);
+			   			if(mainEntry!=null){
+			   				newClass = personClass;
+			   				newEntity = mainEntry;
 			   			}
 			   		}
-			   		if(newClass == EMPTY_STRING){
+			   		if(newEntity == null){
 			   			newClass = PERSON_ANNOTATION;
+			   			newEntity = entity;
 			   		}
-			   		w.write(entity+COLUMN_DELIM+newClass);
+			   		w.write(newEntity+COLUMN_DELIM+newClass);
 			   	}
 			   	else{
 			   		w.write(text);
