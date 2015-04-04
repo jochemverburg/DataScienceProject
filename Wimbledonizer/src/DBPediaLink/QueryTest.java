@@ -3,6 +3,7 @@ package DBPediaLink;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,20 +13,35 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelGetter;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
+import com.hp.hpl.jena.tdb.TDBFactory;
 
 import edu.stanford.nlp.util.Pair;
 
 public class QueryTest {
 
     public static void main(String[] args) throws IOException {
-        System.out.println(addWimbledonPlayerType());
+        //System.out.println(addWimbledonPlayerType());
     	String service = "http://dbpedia.org/sparql";
-        /*String query = "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>"
+    	String query = SemanticWebAnalyzerInterface.QUERY_PREFIXES
+        		+ "SELECT ?p ?name WHERE {"
+        		+ " ?p rdf:type dbpedia-owl:TennisPlayer. "
+        		+ " ?p dbpprop:name ?name."
+        		+ " }"
+        		+ "";
+    	/*String query = "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>"
         		+ "PREFIX dbpprop: <http://dbpedia.org/property/>"
         		+ "PREFIX dbres: <http://dbpedia.org/resource/>"
         		+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
@@ -34,7 +50,7 @@ public class QueryTest {
         		+ " ?p dbpprop:name ?name."
         		+ " }"
         		+ "";*/
-        String query = "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>"
+        /*String query = "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>"
         		+ "PREFIX dbpprop: <http://dbpedia.org/property/>"
         		+ "PREFIX dbres: <http://dbpedia.org/resource/>"
         		+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
@@ -47,10 +63,13 @@ public class QueryTest {
         		+ " FILTER(?w != \"-\"@en)."
         		+ " FILTER(?w != \"A\"@en)"
         		+ " }"
-        		+ "";
+        		+ "";*/
         //String query = "ASK { }";
+        		//QueryExecutionFactory.create(query, dataset);
+    	
        QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
-        
+       /*qe.getDataset().addNamedModel(uri, model);
+       Graph graph = new RDFGraph();*/
         try {
         	ResultSet set = qe.execSelect();
             if (set!=null) {
@@ -68,6 +87,7 @@ public class QueryTest {
             qe.close();
         } // end try/catch/finally
     } // end method
+    
     
     public static String addWimbledonPlayerType() throws IOException{
     	String result = "";
@@ -120,7 +140,8 @@ public class QueryTest {
 		   			}
 		   		}
                 if(contains){
-                	playerRef = "<"+tuple.get(var_person).toString()+"> <"+rdf_type+"> <"+var_type+">";
+                	playerRef = tuple.get(var_person).toString();
+                	//playerRef = "<"+tuple.get(var_person).toString()+"> <"+rdf_type+"> <"+var_type+">";
                 }
             }
 		   	if(playerRef!=null){
@@ -135,7 +156,7 @@ public class QueryTest {
 		if (reader != null) {
 	       reader.close();
 	    }
-		result+="Counted: "+i;
+		//result+="Counted: "+i;
 		
         Writer w = new BufferedWriter(
         		new OutputStreamWriter(

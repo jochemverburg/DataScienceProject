@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DBPediaLink.SemanticWebAnalyzerInterface;
-
 /**
  * This class can add classifications to Persons using an already classified file.
  * Input has to be given as CoNNL:
@@ -39,11 +38,11 @@ public class PersonClassifier {
 	 * Uses the input to find entities classified as Person to classify these further and puts this in the file at outputPath. Uses classes to find the concerned classes in the SemanticWeb and the analyzer to discover and analyze whether it's part of this class.
 	 * @param inputPath The path where the input-file is originated.
 	 * @param outputPath The path where the output-file is originated.
-	 * @param classes A list with the links to the classes of persons. This method is written that if it matches multiple classes these are separated by CLASS_DELIM.
-	 * @param analyzer The object which can analyze the entities and compare them to all persons of the class to check if it's part of that class.
+	 * @param analyzers The objects which can analyze the entities and compare them to all persons of the class to check if it's part of that class. If a person matches multiple classes, the last one in the list is matched. 
 	 * @throws IOException
+	 * @throws PersonClassNotValidException 
 	 */
-	public static void classifyPerson(String inputPath, String outputPath, List<String> classes, SemanticWebAnalyzerInterface analyzer) throws IOException{
+	public static void classifyPerson(String inputPath, String outputPath, List<SemanticWebAnalyzerInterface> analyzers) throws IOException{
 		//System.out.println("Reading file from path: "+path);
 	  	final String splitter = ";";
 	  	
@@ -63,10 +62,10 @@ public class PersonClassifier {
 			   		String entity = splitted[TOKEN_COLUMN];
 			   		String newClass = null;
 			   		String newEntity = null;
-			   		for(String personClass : classes){
-			   			String mainEntry = analyzer.isOfPersonClass(entity, personClass);
+			   		for(SemanticWebAnalyzerInterface analyzer : analyzers){
+			   			String mainEntry = analyzer.isOfPersonClass(entity);
 			   			if(mainEntry!=null){
-			   				newClass = personClass;
+			   				newClass = analyzer.getPersonClass();
 			   				newEntity = mainEntry;
 			   			}
 			   		}
@@ -86,4 +85,6 @@ public class PersonClassifier {
 	    reader.close();
         w.close();
 	}
+	
+	
 }
