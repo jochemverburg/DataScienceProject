@@ -10,41 +10,80 @@
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
   xmlns:owl="http://www.w3.org/2002/07/owl#"
-  xmlns     ="resources/ontologies.xml#"
+  xmlns     ="file:///C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/resources/ontologies.xml#"
 >
 
 <!--http://www.daml.org/2001/01/gedcom/gedcom-->
-<!--<daml:Ontology rdf:about="">
-  <daml:versionInfo>$Id: gedcom.daml,v 1.15 2002/09/06 15:38:18 mdean Exp $</daml:versionInfo>
-  <rdfs:comment>Ontologies for Wimbledon tennis-tournaments DAML+OIL</rdfs:comment>
-  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
-</daml:Ontology>-->
+<owl:Ontology rdf:about="resources/ontologies.xml">
+</owl:Ontology>
 
 <rdfs:Class rdf:ID="Wimbledon2014Player">
-	<rdfs:subClassOf rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
+	<owl:equivalentClass>
+		<rdf:Description>
+			<owl:intersectionOf rdf:parseType="Collection">
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#def"/>
+				  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
+				  <rdf:type rdf:resource="&owl;InverseFunctionalProperty" />
+				</owl:Restriction>
+				<owl:Restriction>
+					<owl:onProperty rdf:resource="#defBy"/>
+					<owl:toClass rdf:resource="#Wimbledon2014Player"/>
+					<rdf:type rdf:resource="&owl;FunctionalProperty" />
+					<owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+				</owl:Restriction>
+				<owl:Class rdf:about="http://dbpedia.org/ontology/TennisPlayer"/>
+			</owl:intersectionOf>
+		</rdf:Description>
+	</owl:equivalentClass>
+	<!--<rdfs:subClassOf rdf:resource=""/>-->
 </rdfs:Class>
-
+<!--
 <rdfs:Class rdf:ID="Wimbledon2014Result">
-	<owl:Restriction>
+	<winner rdf:resource="#Wimbledon2014Player"/>
+	<loser rdf:resource="#Wimbledon2014Player"/>
+	< <owl:Restriction>
 	  <owl:onProperty rdf:resource="#winner" />
-	  <owl:hasValue rdf:resource="F" /> <!--How to say that the hasValue has to be equal to M?-->
+	  <owl:hasValue rdf:resource="F" /> How to say that the hasValue has to be equal to M?
 	</owl:Restriction>
-    <!--<owl:Restriction>
-      <owl:onProperty rdf:resource="#winner" />
-	  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
-	  <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
-    </owl:Restriction>-->
-    <!--<owl:Restriction>
-      <owl:onProperty rdf:resource="#loser"/>
-	  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
-	  <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
-    </owl:Restriction>-->
-</rdfs:Class>
+    <owl:equivalentClass>
+		<owl:Restriction>
+		  <owl:onProperty rdf:resource="#winner" />
+		  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
+		  <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+		</owl:Restriction>
+	</owl:equivalentClass>
+    
+    <owl:equivalentClass>
+		<owl:Restriction>
+		  <owl:onProperty rdf:resource="#loser"/>
+		  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
+		  <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+		</owl:Restriction>
+    </owl:equivalentClass>
+</rdfs:Class>-->
 
-<owl:ObjectProperty rdf:ID="winner"/>
+<owl:ObjectProperty rdf:ID="def"/>
+<owl:ObjectProperty rdf:ID="defBy">
+	<owl:inverseOf rdf:resource="#def"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="bothWonAndLost">
+	<owl:equivalentProperty>
+		<rdf:Description>
+			<owl:intersectionOf rdf:parseType="Collection">
+				  <owl:Property rdf:about="#def"/>
+				  <owl:Property rdf:about="#defBy"/>
+			</owl:intersectionOf>
+		</rdf:Description>
+	</owl:equivalentProperty>
+</owl:ObjectProperty>
+
+<!--<owl:ObjectProperty rdf:ID="winner">
+  <owl:disjointWith rdf:resource="#loser"/>
+</owl:ObjectProperty>
 <owl:ObjectProperty rdf:ID="loser"/>
 
-<!--
 <owl:ObjectProperty rdf:ID="winner">
   <rdf:type rdf:resource="&owl;FunctionalProperty" />
   <rdfs:domain>
@@ -69,7 +108,5 @@
         <owl:Class rdf:resource="#Wimbledon2014Player"/>
     </owl:Class>    
   </rdfs:range>
-  <owl:disjointWith rdf:resource="#winner"/>
-</owl:ObjectProperty>
--->
+</owl:ObjectProperty>-->
 </rdf:RDF>
