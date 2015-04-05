@@ -81,21 +81,39 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
 		
 		String uri = "?uri";
 		String var_name = "?name";
+		String extra_uri = "?extraUri";
 		
 		String namesQuery = QUERY_PREFIXES
-				+ "SELECT "+uri+" "+var_name+" ?extraUri WHERE {"
+				+ "SELECT "+uri+" "+var_name+" WHERE {"
 				+ uri + " dbpprop:name "+var_name+"."
 				+ uri + " rdf:type dbpedia-owl:TennisPlayer. "
-				+ uri + " owl:sameAs ?extraUri."
 				+ " }";
+		String nlNamesQuery = QUERY_PREFIXES
+				+ "SELECT "+uri+" "+var_name+" WHERE {"
+				+ uri + " prop-nl:bijnaam "+var_name+"."
+				+ uri + " rdf:type dbpedia-owl:TennisPlayer. "
+				+ " }";
+		String nlURIQuery = QUERY_PREFIXES
+				+ "SELECT "+uri+" "+extra_uri+" WHERE {"
+				+ uri + " rdf:type dbpedia-owl:TennisPlayer. "
+				+ uri + " owl:sameAs "+extra_uri+". "
+				+ " }";
+		//+ "FILTER regex("+extra_uri+", \"http://nl.dbpedia.org/\")"
+		
 		//System.out.println(playerURI);
 		//.replace("http://dbpedia.org/resource/", "")
-		QueryExecution qe = QueryExecutionFactory.sparqlService(DBPEDIA_SPARQL, namesQuery);
-	    
-		ResultSet set = qe.execSelect();
-        if (set!=null) {
-            while(set.hasNext()){
-            	QuerySolution sol = set.next();
+		QueryExecution qeNames = QueryExecutionFactory.sparqlService(DBPEDIA_SPARQL, namesQuery);
+	    QueryExecution qeNLURIs = QueryExecutionFactory.sparqlService(DBPEDIA_SPARQL, nlURIQuery);
+		QueryExecution qeNicks = QueryExecutionFactory.sparqlService(DBPEDIANL_SPARQL, nlNamesQuery);
+		
+		ResultSet nameSet = qeNames.execSelect();
+		ResultSet nlUriSet = qeNLURIs.execSelect();
+		ResultSet nicknameSet = qeNicks.execSelect();
+		
+		//Gets the names from the main page
+        if (nameSet!=null) {
+            while(nameSet.hasNext()){
+            	QuerySolution sol = nameSet.next();
             	String playerURI = sol.get(uri).toString();
             	String name = sol.get(var_name).toString();
 	            if(playerURIs.contains(playerURI)){	
@@ -107,12 +125,46 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
 	            		temp.add(name);
 	            		result.put(playerURI, temp);
 	            	}
-            		System.out.println(playerURI + " " + name + " " + sol.get("?extraUri"));
+            		System.out.println(playerURI + " " + name);
+	            }
+
+            }
+        }
+        
+        //Gets all Dutch uris mapped to the original dbpedia
+        Map<String, String> nlUriMap = new HashMap<String, String>();
+        if(nlUriSet != null){
+        	while(nlUriSet.hasNext()){
+            	QuerySolution sol = nlUriSet.next();
+            	String playerURI = sol.get(uri).toString();
+            	String nlURI = sol.get(extra_uri).toString();
+	            if(playerURIs.contains(playerURI)){	
+	            	nlUriMap.put(nlURI, playerURI);
 	            }
             }
         }
-        else result = null;
-		
+        else nlUriMap = null;
+        
+        if (nicknameSet!=null && nlUriMap!=null) {
+            while(nicknameSet.hasNext()){
+            	QuerySolution sol = nicknameSet.next();
+            	String nlURI = sol.get(uri).toString();
+            	String name = sol.get(var_name).toString();
+            	if(nlUriMap.containsKey(nlURI)){
+            		String playerURI = nlUriMap.get(nlURI);
+            		if(result.containsKey(playerURI)){
+	            		result.get(playerURI).add(name);
+	            	}
+	            	else{
+	            		List<String> temp = new ArrayList<String>();
+	            		temp.add(name);
+	            		result.put(playerURI, temp);
+	            	}
+            		System.out.println(playerURI + " " + nlURI + " " + name);
+            	}
+            }
+        }
+        
 		return result;
 	}
 	
