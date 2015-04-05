@@ -97,8 +97,9 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
 				+ "SELECT "+uri+" "+extra_uri+" WHERE {"
 				+ uri + " rdf:type dbpedia-owl:TennisPlayer. "
 				+ uri + " owl:sameAs "+extra_uri+". "
+				+ "FILTER regex("+extra_uri+", \"http://nl.dbpedia.org/\")"
 				+ " }";
-		//+ "FILTER regex("+extra_uri+", \"http://nl.dbpedia.org/\")"
+		//
 		
 		//System.out.println(playerURI);
 		//.replace("http://dbpedia.org/resource/", "")
@@ -125,7 +126,7 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
 	            		temp.add(name);
 	            		result.put(playerURI, temp);
 	            	}
-            		System.out.println(playerURI + " " + name);
+            		//System.out.println(playerURI + " " + name);
 	            }
 
             }
@@ -139,6 +140,7 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
             	String playerURI = sol.get(uri).toString();
             	String nlURI = sol.get(extra_uri).toString();
 	            if(playerURIs.contains(playerURI)){	
+	            	//System.out.println("URI: "+playerURI+" "+nlURI);
 	            	nlUriMap.put(nlURI, playerURI);
 	            }
             }
@@ -160,7 +162,7 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
 	            		temp.add(name);
 	            		result.put(playerURI, temp);
 	            	}
-            		System.out.println(playerURI + " " + nlURI + " " + name);
+            		//System.out.println(playerURI + " " + nlURI + " " + name);
             	}
             }
         }
@@ -170,7 +172,7 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
 	
 	public static void main(String[] args) throws IOException{
 		TennisPlayerAnalyzer analyzer = new TennisPlayerAnalyzer("resources/participantssubset.nt","Wimbledon_Player");
-		System.out.println(analyzer.isOfPersonClass("Nadal"));
+		System.out.println(analyzer.isOfPersonClass("Djoker"));
 	}
 	
 }
