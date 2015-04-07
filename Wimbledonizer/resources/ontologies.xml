@@ -17,7 +17,7 @@
 <owl:Ontology rdf:about="resources/ontologies.xml">
 </owl:Ontology>
 
-<rdfs:Class rdf:ID="Wimbledon2014Player">
+<owl:Class rdf:ID="Wimbledon2014Player">
 	<owl:equivalentClass>
 		<rdf:Description>
 			<owl:intersectionOf rdf:parseType="Collection">
@@ -33,11 +33,17 @@
 					<owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
 				</owl:Restriction>
 				-->
+				<!-- Deze kan de reasoner niet uitrekenen -->
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#bothWonAndLost" />
+				  <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+				</owl:Restriction>
+				
 				<owl:Class rdf:about="http://dbpedia.org/ontology/TennisPlayer"/>
 			</owl:intersectionOf>
 		</rdf:Description>
 	</owl:equivalentClass>
-</rdfs:Class>
+</owl:Class>
 <!--
 <rdfs:Class rdf:ID="Wimbledon2014Result">
 	<winner rdf:resource="#Wimbledon2014Player"/>
@@ -66,15 +72,17 @@
 <owl:ObjectProperty rdf:ID="def">
 	<!-- Defines that a person can only be defeated once -->
 	<rdf:type rdf:resource="&owl;InverseFunctionalProperty" />
+	<rdfs:subPropertyOf rdf:resource="#bothWonAndLost"/>
 	<owl:disjointWith rdf:resource="#defBy"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:ID="defBy">
 	<owl:inverseOf rdf:resource="#def"/>
+	<rdfs:subPropertyOf rdf:resource="#bothWonAndLost"/>
+	<owl:disjointWith rdf:resource="#def"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:ID="bothWonAndLost">
-
 	<!--<owl:equivalentProperty rdf:resource="#def"/>
 	<owl:equivalentProperty rdf:resource="#defBy"/>
 	<rdfs:domain>
