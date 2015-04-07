@@ -33,8 +33,9 @@ public class Executer {
 		        System.out.println(" - " + i.next());
 		    }
 		}*/
-		
-		Executer newEx = new Executer("resources/ontologies.xml","resources/results.nt");
+		String resources = "resources/results.nt";
+		//resources = "resources/exampleTooManyDefeats.nt";
+		Executer newEx = new Executer("resources/ontologies.xml",resources);
 		
 		Resource nadal = newEx.getResource(DBPEDIA+"Murray%E2%80%93Nadal_rivalry");
 		newEx.printStatements(nadal, null, null);

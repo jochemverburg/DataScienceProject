@@ -1,6 +1,6 @@
 <http://dbpedia.org/resource/Murray%E2%80%93Nadal_rivalry> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/resources/ontologies.xml#Wimbledon2014Player> .
 <http://dbpedia.org/resource/Novak_Djokovic> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/resources/ontologies.xml#Wimbledon2014Player> .
+<http://dbpedia.org/resource/Murray%E2%80%93Nadal_rivalry> <file:///C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/resources/ontologies.xml#def> <http://dbpedia.org/resource/Murray%E2%80%93Nadal_rivalry> .
 <http://dbpedia.org/resource/Murray%E2%80%93Nadal_rivalry> <file:///C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/resources/ontologies.xml#def> <http://dbpedia.org/resource/Novak_Djokovic> .
 <http://dbpedia.org/resource/Novak_Djokovic> <file:///C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/resources/ontologies.xml#def> <http://dbpedia.org/resource/Murray%E2%80%93Nadal_rivalry> .
-<http://dbpedia.org/resource/Novak_Djokovic> <file:///C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/resources/ontologies.xml#defBy> <http://dbpedia.org/resource/Murray%E2%80%93Nadal_rivalry> .
 <http://dbpedia.org/resource/Murray%E2%80%93Nadal_rivalry> <http://www.w3.org/2002/07/owl#differentFrom> <http://dbpedia.org/resource/Novak_Djokovic> .

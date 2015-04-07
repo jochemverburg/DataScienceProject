@@ -24,19 +24,19 @@
 				<owl:Restriction>
 				  <owl:onProperty rdf:resource="#def"/>
 				  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
-				  <rdf:type rdf:resource="&owl;InverseFunctionalProperty" />
 				</owl:Restriction>
-				<owl:Restriction>
+				<!-- This part could define that the person can only be defeated once in a different way -->
+				<!--<owl:Restriction>
 					<owl:onProperty rdf:resource="#defBy"/>
 					<owl:toClass rdf:resource="#Wimbledon2014Player"/>
 					<rdf:type rdf:resource="&owl;FunctionalProperty" />
 					<owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
 				</owl:Restriction>
+				-->
 				<owl:Class rdf:about="http://dbpedia.org/ontology/TennisPlayer"/>
 			</owl:intersectionOf>
 		</rdf:Description>
 	</owl:equivalentClass>
-	<!--<rdfs:subClassOf rdf:resource=""/>-->
 </rdfs:Class>
 <!--
 <rdfs:Class rdf:ID="Wimbledon2014Result">
@@ -63,20 +63,40 @@
     </owl:equivalentClass>
 </rdfs:Class>-->
 
-<owl:ObjectProperty rdf:ID="def"/>
+<owl:ObjectProperty rdf:ID="def">
+	<!-- Defines that a person can only be defeated once -->
+	<rdf:type rdf:resource="&owl;InverseFunctionalProperty" />
+	<owl:disjointWith rdf:resource="#defBy"/>
+</owl:ObjectProperty>
+
 <owl:ObjectProperty rdf:ID="defBy">
 	<owl:inverseOf rdf:resource="#def"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:ID="bothWonAndLost">
-	<owl:equivalentProperty>
+
+	<!--<owl:equivalentProperty rdf:resource="#def"/>
+	<owl:equivalentProperty rdf:resource="#defBy"/>
+	<rdfs:domain>
+		<owl:equivalentClass>
+			<owl:intersectionOf rdf:parseType="Collection">
+				<owl:Restriction>
+					<owl:onProperty rdf:resource="#defBy"/>
+					<owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+				</owl:Restriction>
+				<owl:Class rdf:about="#Wimbledon2014Player"/>
+			</owl:intersectionOf>
+		</owl:equivalentClass>
+	</rdfs:domain>-->
+	
+	<!--<owl:equivalentProperty>
 		<rdf:Description>
 			<owl:intersectionOf rdf:parseType="Collection">
 				  <owl:Property rdf:about="#def"/>
 				  <owl:Property rdf:about="#defBy"/>
 			</owl:intersectionOf>
 		</rdf:Description>
-	</owl:equivalentProperty>
+	</owl:equivalentProperty>-->
 </owl:ObjectProperty>
 
 <!--<owl:ObjectProperty rdf:ID="winner">
