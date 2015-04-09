@@ -1,28 +1,29 @@
-package DBPediaLink;
+package entityResolution;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import classifier.EntityResolutionInterface;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
-public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
+public class TennisPlayerAnalyzer extends PersonEntityResolution {
 	
 	private List<String> playerURIs;
 	private String playerClass;
 	
 	public TennisPlayerAnalyzer(String playerClass) throws Exception{
 		// TODO Make a general implementation
+		super(playerClass);
 		throw new Exception("This constructor does not work yet");
 	}
 	
@@ -31,8 +32,8 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
 	}
 	
 	public TennisPlayerAnalyzer(List<String> playerURIs, String playerClass){
+		super(playerClass);
 		this.playerURIs = playerURIs;
-		this.playerClass = playerClass;
 	}
 	
 	private static List<String> getPlayerURIsFromPath(String path) throws IOException{
@@ -50,33 +51,10 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
  	    }
     	return playerURIs;
 	}
-	
-	@Override
-	public String isOfPersonClass(String name) {
-		/*for(String playerURI : playerURIs){
-			for(String playerName : getNamesForURI(playerURI)){
-				if(playerName.contains(name)){
-					return playerURI;
-				}
-			}
-		}*/
-		Map<String, List<String>> uriNames = getNamesForURI();
-		for(String playerURI : uriNames.keySet()){
-			for(String playerName : uriNames.get(playerURI)){
-				if(playerName.contains(name)){
-					return playerURI;
-				}
-			}
-		}
-		return null;
-	}
+
 
 	@Override
-	public String getPersonClass() {
-		return playerClass;
-	}
-
-	public Map<String,List<String>> getNamesForURI(){
+	public Map<String,List<String>> getEntityNameMapping(){
 		Map<String, List<String>> result = new HashMap<String, List<String>>();
 		
 		String uri = "?uri";
@@ -172,7 +150,7 @@ public class TennisPlayerAnalyzer implements SemanticWebAnalyzerInterface {
 	
 	public static void main(String[] args) throws IOException{
 		TennisPlayerAnalyzer analyzer = new TennisPlayerAnalyzer("resources/participantssubset.nt","Wimbledon_Player");
-		System.out.println(analyzer.isOfPersonClass("Djoker"));
+		System.out.println(analyzer.isOfClass("Djoker"));
 	}
-	
+
 }

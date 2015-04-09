@@ -1,18 +1,14 @@
-package NLP;
+package classifier;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
-
-import DBPediaLink.SemanticWebAnalyzerInterface;
 /**
  * This class can add classifications to Persons using an already classified file.
  * Input has to be given as CoNNL:
@@ -42,10 +38,7 @@ public class PersonClassifier {
 	 * @throws IOException
 	 * @throws PersonClassNotValidException 
 	 */
-	public static void classifyPerson(String inputPath, String outputPath, List<SemanticWebAnalyzerInterface> analyzers) throws IOException{
-		//System.out.println("Reading file from path: "+path);
-	  	final String splitter = ";";
-	  	
+	public static void classifyPerson(String inputPath, String outputPath, List<EntityResolutionInterface> analyzers) throws IOException{
 		BufferedReader reader = new BufferedReader(
 				new FileReader( 
 						new File(inputPath)));
@@ -62,10 +55,10 @@ public class PersonClassifier {
 			   		String entity = splitted[TOKEN_COLUMN];
 			   		String newClass = null;
 			   		String newEntity = null;
-			   		for(SemanticWebAnalyzerInterface analyzer : analyzers){
-			   			String mainEntry = analyzer.isOfPersonClass(entity);
+			   		for(EntityResolutionInterface analyzer : analyzers){
+			   			String mainEntry = analyzer.isOfClass(entity);
 			   			if(mainEntry!=null){
-			   				newClass = analyzer.getPersonClass();
+			   				newClass = analyzer.getClassName();
 			   				newEntity = mainEntry;
 			   			}
 			   		}

@@ -34,7 +34,7 @@ public class Executer {
 		    }
 		}*/
 		String resources = "resources/results.nt";
-		//resources = "resources/exampleTooManyDefeats.nt";
+		resources = "resources/exampleTooManyDefeats.nt";
 		Executer newEx = new Executer("resources/ontologies.xml",resources);
 		
 		Resource nadal = newEx.getResource(DBPEDIA+"Murray%E2%80%93Nadal_rivalry");

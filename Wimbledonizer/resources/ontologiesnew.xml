@@ -17,24 +17,35 @@
 <owl:Ontology rdf:about="resources/ontologies.xml">
 </owl:Ontology>
 
-<owl:Class rdf:ID="Wimbledon2014Player">
+<owl:Class rdf:ID="TournamentPlayer">
 	<owl:equivalentClass>
 		<rdf:Description>
 			<owl:intersectionOf rdf:parseType="Collection">
 				<owl:Restriction>
-				  <owl:onProperty rdf:resource="#def"/>
-				  <owl:toClass rdf:resource="#Wimbledon2014Player"/>
+				  <owl:onProperty rdf:resource="#player"/>
+				  <owl:toClass rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
 				</owl:Restriction>
-				<!-- This part could define that the person can only be defeated once in a different way -->
-				<!--<owl:Restriction>
-					<owl:onProperty rdf:resource="#defBy"/>
-					<owl:toClass rdf:resource="#Wimbledon2014Player"/>
-					<rdf:type rdf:resource="&owl;FunctionalProperty" />
-					<owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#tournament"/>
+				  <owl:toClass rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
 				</owl:Restriction>
-				-->
-				
-				<owl:Class rdf:about="http://dbpedia.org/ontology/TennisPlayer"/>
+			</owl:intersectionOf>
+		</rdf:Description>
+	</owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:ID="TennisTournamentPlayer">
+	<owl:equivalentClass>
+		<rdf:Description>
+			<owl:intersectionOf rdf:parseType="Collection">
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#player"/>
+				  <owl:toClass rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
+				</owl:Restriction>
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#tournament"/>
+				  <owl:toClass rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
+				</owl:Restriction>
 			</owl:intersectionOf>
 		</rdf:Description>
 	</owl:equivalentClass>

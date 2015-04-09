@@ -1,9 +1,8 @@
-package DBPediaLink;
+package semanticWeb;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,29 +12,21 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
+
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelGetter;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
-import com.hp.hpl.jena.tdb.TDBFactory;
 
-import edu.stanford.nlp.util.Pair;
+import entityResolution.PersonEntityResolution;
 
 public class QueryTest {
 
     public static void main(String[] args) throws IOException {
         //System.out.println(addWimbledonPlayerType());
     	String service = "http://dbpedia.org/sparql";
-    	String query = SemanticWebAnalyzerInterface.QUERY_PREFIXES
+    	String query = PersonEntityResolution.QUERY_PREFIXES
         		+ "SELECT ?p ?name WHERE {"
         		+ " ?p rdf:type dbpedia-owl:TennisPlayer. "
         		+ " ?p dbpprop:name ?name."

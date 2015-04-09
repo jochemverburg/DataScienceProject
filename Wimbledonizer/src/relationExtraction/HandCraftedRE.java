@@ -1,4 +1,5 @@
-package NLP;
+package relationExtraction;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.RegEx;
+import NLP.*;
 
 import edu.stanford.nlp.util.Pair;
 import edu.stanford.nlp.util.Triple;
