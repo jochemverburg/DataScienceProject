@@ -3,8 +3,11 @@ package entityResolution;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import classifier.EntityResolutionInterface;
+import edu.berkeley.nlp.util.SortedList;
+import edu.stanford.nlp.util.Pair;
 
 public abstract class PersonEntityResolution implements EntityResolutionInterface{
 		
@@ -19,6 +22,8 @@ public abstract class PersonEntityResolution implements EntityResolutionInterfac
 							    		+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
 							    		+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>"
 							    		+ "PREFIX prop-nl: <http://nl.dbpedia.org/property/>";
+		
+		public static final double TRESHOLD = 0.7;
 		
 		public PersonEntityResolution(String className){
 			this.className = className;
@@ -80,7 +85,22 @@ public abstract class PersonEntityResolution implements EntityResolutionInterfac
 	     */
 	    public static String getEntity(String name, Map<String,List<String>> entityNamesMapping){
 			// TODO Implement using probabilities
-	    	return null;
+	    	List<Pair<String, Double>> probabilities = new SortedList<Pair<String, Double>>(new ProbabilityComparator<String>());
+	    	for(Entry<String, List<String>> entity : entityNamesMapping.entrySet()){
+	    		double probability = decideProbability(name, entity.getValue());
+	    		
+	    		//Only add results above a certain treshold
+	    		if(probability>=TRESHOLD){
+	    			probabilities.add(new Pair<String,Double>(entity.getKey(),probability));
+	    		}
+	    	}
+	    	if(probabilities.isEmpty()){
+		    	return null;
+	    	}
+	    	else{
+	    		//Return first result
+	    		return probabilities.get(0).first();
+	    	}
 	    }
 
 

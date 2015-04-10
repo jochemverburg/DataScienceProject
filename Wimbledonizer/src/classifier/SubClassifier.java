@@ -18,7 +18,7 @@ import java.util.List;
  *
  * Output is given the same way
  */
-public class PersonClassifier {
+public class SubClassifier {
 	
 	public static final String COLUMN_DELIM = "\t";
 	public static final String SENTENCE_SEPARATOR = "\n";
@@ -31,14 +31,13 @@ public class PersonClassifier {
 	public static final int CLASS_COLUMN = 1;
 	
 	/**
-	 * Uses the input to find entities classified as Person to classify these further and puts this in the file at outputPath. Uses classes to find the concerned classes in the SemanticWeb and the analyzer to discover and analyze whether it's part of this class.
+	 * Uses the input to find entities classified as the classAnnotation to classify these further and puts this in the file at outputPath. Uses classes to find the concerned classes in the SemanticWeb and the analyzer to discover and analyze whether it's part of this class.
 	 * @param inputPath The path where the input-file is originated.
 	 * @param outputPath The path where the output-file is originated.
-	 * @param analyzers The objects which can analyze the entities and compare them to all persons of the class to check if it's part of that class. If a person matches multiple classes, the last one in the list is matched. 
+	 * @param analyzers The objects which can analyze the entities and compare them to all entities of the class to check if it's part of that class. If an entity matches multiple classes, the last one in the list is matched. 
 	 * @throws IOException
-	 * @throws PersonClassNotValidException 
 	 */
-	public static void classifyPerson(String inputPath, String outputPath, List<EntityResolutionInterface> analyzers) throws IOException{
+	public static void subClassifyClass(String inputPath, String outputPath, List<EntityResolutionInterface> analyzers, String classAnnotation) throws IOException{
 		BufferedReader reader = new BufferedReader(
 				new FileReader( 
 						new File(inputPath)));
@@ -51,7 +50,7 @@ public class PersonClassifier {
 		while ((text = reader.readLine()) != null) {
 			if(!text.isEmpty()){
 				String[] splitted = text.split(COLUMN_DELIM);
-			   	if(splitted[CLASS_COLUMN].equals(PERSON_ANNOTATION)){
+			   	if(splitted[CLASS_COLUMN].equals(classAnnotation)){
 			   		String entity = splitted[TOKEN_COLUMN];
 			   		String newClass = null;
 			   		String newEntity = null;
@@ -63,7 +62,7 @@ public class PersonClassifier {
 			   			}
 			   		}
 			   		if(newEntity == null){
-			   			newClass = PERSON_ANNOTATION;
+			   			newClass = classAnnotation;
 			   			newEntity = entity;
 			   		}
 			   		w.write(newEntity+COLUMN_DELIM+newClass);
@@ -77,6 +76,17 @@ public class PersonClassifier {
 		   
 	    reader.close();
         w.close();
+	}
+	
+	/**
+	 * Can classify persons, uses PERSON_ANNOTATION in subClassifyClass()
+	 * @param inputPath
+	 * @param outputPath
+	 * @param analyzers
+	 * @throws IOException
+	 */
+	public static void classifyPerson(String inputPath, String outputPath, List<EntityResolutionInterface> analyzers) throws IOException{
+		subClassifyClass(inputPath, outputPath, analyzers, PERSON_ANNOTATION);
 	}
 	
 	
