@@ -4,9 +4,10 @@ import java.text.Normalizer;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import classifier.EntityResolutionInterface;
-import edu.berkeley.nlp.util.SortedList;
 import edu.stanford.nlp.util.Pair;
 
 public abstract class PersonEntityResolution implements EntityResolutionInterface{
@@ -67,14 +68,52 @@ public abstract class PersonEntityResolution implements EntityResolutionInterfac
 	    }
 	    
 	    /**
-	     * This method should decide the probability that the name belongs the same entity as this list of names.
+	     * This method should decide the probability that the name belongs to the same entity as this list of names.
 	     * @param name The name to be analyzed
 	     * @param listOfNames The names belonging to one of the possible entities
 	     * @return The probability of the name
+	     * @ensure result<=1.0 && result>=0.0
 	     */
 	    public static double decideProbability(String name, List<String> listOfNames){
 	    	// TODO Implement Fuzzy logic/probability calculation
-	    	return 0.0;
+	    	double max = 0.0;
+	    	for(String oneOfList : listOfNames){
+	    		double temp = decideProbability(name, oneOfList);
+	    		max = temp > max ? temp : max;
+	    	}
+	    	return max;
+	    }
+	    
+	    /**
+	     * This method should decide the probability that the name belongs the same entity as this name.
+	     * @param name The name to be analyzed
+	     * @param oneOfList One of the list of names belong to the possible entity
+	     * @return The probability of the name
+	     * @ensure result<=1.0 && result>=0.0
+	     */
+	    public static double decideProbability(String name, String oneOfList){
+	    	return (containsNames(oneOfList, name) ? 1.0 : 0.0);
+	    }
+	    
+	    /**
+	     * Checks if a containedName is in the name. If all parts of the name are in the name, it returns true. Separation is done by using blank_space and comma.
+	     * @param name
+	     * @param containedName
+	     * @return
+	     */
+	    public static boolean containsNames(String name, String containedName){
+	    	boolean result = true;
+	    	String[] subNamesTemp = containedName.split(" ");
+			for(String subName : subNamesTemp){
+				String[] subNamesTemp2 = subName.split(",");
+				for(String subNameTemp : subNamesTemp2){
+					if(!flattenToAsciiLowerCase(name).contains(flattenToAsciiLowerCase(subNameTemp))){
+						result = false;
+					}
+				}
+			}
+			
+			return result;
 	    }
 	    
 	    /**
@@ -85,7 +124,7 @@ public abstract class PersonEntityResolution implements EntityResolutionInterfac
 	     */
 	    public static String getEntity(String name, Map<String,List<String>> entityNamesMapping){
 			// TODO Implement using probabilities
-	    	List<Pair<String, Double>> probabilities = new SortedList<Pair<String, Double>>(new ProbabilityComparator<String>());
+	    	SortedSet<Pair<String, Double>> probabilities = new TreeSet<Pair<String, Double>>(new ProbabilityComparator<String>());
 	    	for(Entry<String, List<String>> entity : entityNamesMapping.entrySet()){
 	    		double probability = decideProbability(name, entity.getValue());
 	    		
@@ -99,7 +138,7 @@ public abstract class PersonEntityResolution implements EntityResolutionInterfac
 	    	}
 	    	else{
 	    		//Return first result
-	    		return probabilities.get(0).first();
+	    		return probabilities.first().first();
 	    	}
 	    }
 

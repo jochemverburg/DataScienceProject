@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +28,8 @@ import edu.stanford.nlp.util.Pair;
  * Output is given in tab-separated files:
  * Every line represents a defeat-relation. In the first column the winner and after the tab the loser.
  * It should not give any duplicate defeat-relations.
+ * 
+ * As input the output of TennisPlayerClassifier.classifyTennisPlayers() can be used.
  */
 public class DefeatRE {
 
@@ -36,7 +41,7 @@ public class DefeatRE {
 	 */
 	public static final int RELATION_SIZE = 2;
 	
-	public static void printDefeatRelations(String inputPath, String outputPath, List<String> possibleSubjects) throws IOException{
+	public static void printDefeatRelations(String inputPath, String outputPath, List<String> possibleSubjects, int minOccurences) throws IOException{
 		Pair<List<String>, List<List<String>>> readFile = readFile(inputPath, possibleSubjects);
 		List<String> tweets = readFile.first();
 		List<List<String>> names = readFile.second();
@@ -46,14 +51,14 @@ public class DefeatRE {
         				new FileOutputStream(
         						new File(outputPath))));
 		
-		List<Pair<String, String>> relations = getDefeatList(tweets, names);
+		List<Pair<String, String>> relations = getDefeatList(tweets, names, minOccurences);
 		for(Pair<String, String> pair : relations){
 			w.write(pair.first() + COLUMN_DELIM + pair.second() + "\n");
 		}
 		w.close();
 	}
 	
-	private static Pair<List<String>, List<List<String>>> readFile(String inputPath, List<String> possibleSubjects) throws IOException{
+	public static Pair<List<String>, List<List<String>>> readFile(String inputPath, List<String> possibleSubjects) throws IOException{
 		BufferedReader reader = new BufferedReader(
 				new FileReader( 
 						new File(inputPath)));
@@ -104,7 +109,29 @@ public class DefeatRE {
 			}
 		}
 		
+
+		if(reader!=null){
+			reader.close();
+		}
+		
 		return new Pair<List<String>,List<List<String>>>(tweets, names);
+	}
+	
+	public static List<Pair<String,String>> getDefeatList(List<String> tweets, List<List<String>> namesInTweets, int minOccurences){
+		return getDefeatList(getDefeatMap(tweets,namesInTweets),minOccurences);
+	}
+	
+	public static List<Pair<String,String>> getDefeatList(Map<Pair<String,String>,Integer> defeatMap, int minOccurences){
+		List<Pair<String,String>> result = new ArrayList<Pair<String,String>>();
+		for(Entry<Pair<String,String>,Integer> entry : defeatMap.entrySet()){
+			Pair<String,String> revertedPair = new Pair<String,String>(entry.getKey().second(),entry.getKey().first());
+			if(entry.getValue()>=minOccurences && 
+					((!entry.getKey().first().equals(entry.getKey().second()) && !defeatMap.keySet().contains(revertedPair)) 
+							|| (defeatMap.keySet().contains(revertedPair) && entry.getValue()>=defeatMap.get(revertedPair)))){	
+				result.add(entry.getKey());
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -113,38 +140,49 @@ public class DefeatRE {
 	 * @param namesInTweets
 	 * @return
 	 */
-	public static List<Pair<String, String>> getDefeatList(List<String> tweets, List<List<String>> namesInTweets){
-
-		List<Pair<String,String>> result = new ArrayList<Pair<String,String>>();
+	public static Map<Pair<String,String>,Integer>  getDefeatMap(List<String> tweets, List<List<String>> namesInTweets){
+		
+		Map<Pair<String,String>,Integer> result = new HashMap<Pair<String,String>,Integer>();
+		
+		//List<Pair<String,String>> result = new ArrayList<Pair<String,String>>();
 		
 		for(int i = 0; i<tweets.size(); i++){
 			String tweet = tweets.get(i);
 			List<String> names = namesInTweets.get(i);
-			String nameRegex = getNameRegex(names);
-			if(names.size()>=RELATION_SIZE && nameRegex!=null){
-				
-				//Makes sure that it only matches with no persons in between
-				String lookaheadRandom = "((?!"+nameRegex+").)*";
-				String regex = nameRegex+lookaheadRandom+DEFEAT_REGEX+RANDOM_REGEX+nameRegex;
-				
-				//Has to be used more often so already compile
-				Pattern personPattern = Pattern.compile(nameRegex);
-				
-				if(tweet.matches(RANDOM_REGEX+regex+RANDOM_REGEX)){
-					Matcher defeatMatcher = Pattern.compile(regex).matcher(tweet);
+			if(names!=null){
+				String nameRegex = getNameRegex(names);
+				if(names.size()>=RELATION_SIZE && nameRegex!=null){
 					
-					while(defeatMatcher.find()){
-						Matcher personMatcher = personPattern.matcher(defeatMatcher.group());
+					//Makes sure that it only matches with no persons in between
+					String lookaheadRandom = "((?!"+nameRegex+").)*";
+					String regex = nameRegex+lookaheadRandom+DEFEAT_REGEX+RANDOM_REGEX+nameRegex;
+					
+					//Has to be used more often so already compile
+					Pattern personPattern = Pattern.compile(nameRegex);
+					
+					if(tweet.matches(RANDOM_REGEX+regex+RANDOM_REGEX)){
+						Matcher defeatMatcher = Pattern.compile(regex).matcher(tweet);
 						
-						Pair<String, String> defeatPair = new Pair<String, String>();
-						
-						personMatcher.find();
-						defeatPair.setFirst(personMatcher.group());
-						personMatcher.find();
-						defeatPair.setSecond(personMatcher.group());
-						
-						if(!result.contains(defeatPair)){
-							result.add(defeatPair);
+						while(defeatMatcher.find()){
+							Matcher personMatcher = personPattern.matcher(defeatMatcher.group());
+							
+							Pair<String, String> defeatPair = new Pair<String, String>();
+							
+							personMatcher.find();
+							defeatPair.setFirst(personMatcher.group());
+							personMatcher.find();
+							defeatPair.setSecond(personMatcher.group());
+							
+							/* Used for first test
+							if(!result.contains(defeatPair)){
+								result.add(defeatPair);
+							}*/
+							if(result.containsKey(defeatPair)){
+								result.put(defeatPair, result.get(defeatPair)+1);
+							}
+							else{
+								result.put(defeatPair, 1);
+							}
 						}
 					}
 				}
@@ -161,7 +199,6 @@ public class DefeatRE {
 	 */
 	public static String getNameRegex(List<String> names){
 		String nameRegex = null;
-		
 		for(String name : names){
 			if(nameRegex!=null){
 				nameRegex+="|";
@@ -172,9 +209,8 @@ public class DefeatRE {
 			nameRegex+=name;
 		}
 		if(nameRegex!=null){
-			nameRegex+=")";
+				nameRegex+=")";
 		}
-		
 		return nameRegex;
 	}
 

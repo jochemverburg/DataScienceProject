@@ -17,13 +17,16 @@ import java.util.List;
  * After a tweet/sentence a blank line follows.
  *
  * Output is given the same way
+ * 
+ * As input the output of #TODO can be used. Besides this implementations of EntityResolutionInterface can be used.
  */
 public class SubClassifier {
 	
 	public static final String COLUMN_DELIM = "\t";
 	public static final String SENTENCE_SEPARATOR = "\n";
-	public static final String PERSON_ANNOTATION = "Person";
+	public static final String PERSON_ANNOTATION = "PERSON";
 	public static final String CLASS_DELIM = "\t";
+	public static final String NO_TAG = "O";
 	
 	public static final String EMPTY_STRING = "";
 	
@@ -88,6 +91,7 @@ public class SubClassifier {
 	public static void classifyPerson(String inputPath, String outputPath, List<EntityResolutionInterface> analyzers) throws IOException{
 		subClassifyClass(inputPath, outputPath, analyzers, PERSON_ANNOTATION);
 	}
+	
 	
 	
 }

@@ -1,4 +1,4 @@
-package NLP;
+package classifier;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.nlp.classify.Classifier;
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.util.Pair;
@@ -88,4 +87,35 @@ public class TweetFileReader {
 			
 			return classifiedOffsets;
 	  	}
+	  
+	  /**
+	   * Tweet should always be in the last part, so the delim won't be filtered out from the rest of the tweet.
+	   * @param path
+	   * @param delim
+	   * @param tweetPart
+	   * @return
+	   * @throws IOException
+	   */
+	  public static List<String> readTweets(String path, String delim, int tweetPart) throws IOException{
+			//System.out.println("Reading file from path: "+path);
+		  	
+			File file = new File(path);
+			BufferedReader reader = null;
+			reader = new BufferedReader(new FileReader(file));
+			List<String> fileContents = new ArrayList<String>();
+			String text = null;	
+			
+			while ((text = reader.readLine()) != null) {
+			   	for(int i=1; i<tweetPart; i++){
+			   		text = text.substring(text.indexOf(delim)+1);
+			   	}
+			   	fileContents.add(text);
+			}
+			   
+			if (reader != null) {
+		       reader.close();
+		    }
+			
+			return fileContents;
+		}
 }

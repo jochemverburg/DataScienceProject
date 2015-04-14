@@ -2,10 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/Jochem/Dropbox/UT/Master/DataScience/5. NLP/Resources/ark-tweet-nlp-0.3.2/ark-tweet-nlp-0.3.2/ark-tweet-nlp-0.3.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Jochem/Dropbox/UT/Master/DataScience/5. NLP/Resources/stanford-ner-2015-01-29/stanford-ner-2015-01-30/stanford-ner-3.5.1.jar" sourcepath="C:/Users/Jochem/Dropbox/UT/Master/DataScience/5. NLP/Resources/stanford-ner-2015-01-29/stanford-ner-2015-01-30/stanford-ner-3.5.1-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Jochem/Dropbox/UT/Master/DataScience/5. NLP/Resources/stanford-ner-2015-01-29/stanford-ner-2015-01-30/stanford-ner-3.5.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Jochem/Dropbox/UT/Master/DataScience/5. NLP/Resources/stanford-ner-2015-01-29/stanford-ner-2015-01-30/stanford-ner-3.5.1-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Apache Jena/apache-jena-2.12.1/lib/commons-codec-1.6.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Apache Jena/apache-jena-2.12.1/lib/commons-csv-1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Apache Jena/apache-jena-2.12.1/lib/commons-lang3-3.1.jar"/>
@@ -33,5 +29,9 @@
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Apache Jena/apache-jena-2.12.1/lib-src/jena-iri-1.1.1-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Apache Jena/apache-jena-2.12.1/lib-src/jena-sdb-1.5.1-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Apache Jena/apache-jena-2.12.1/lib-src/jena-tdb-1.1.1-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/stanford-ner-2015-01-29/stanford-ner-2015-01-30/stanford-ner-3.5.1.jar" sourcepath="stanford-ner-2015-01-29/stanford-ner-2015-01-30/stanford-ner-3.5.1-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/stanford-ner-2015-01-29/stanford-ner-2015-01-30/stanford-ner-3.5.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/stanford-ner-2015-01-29/stanford-ner-2015-01-30/stanford-ner-3.5.1-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jochem/Dropbox/UT/Master/DataScience/5. NLP/Resources/ark-tweet-nlp-0.3.2/ark-tweet-nlp-0.3.2/ark-tweet-nlp-0.3.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

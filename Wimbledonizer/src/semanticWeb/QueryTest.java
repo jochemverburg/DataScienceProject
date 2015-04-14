@@ -83,8 +83,8 @@ public class QueryTest {
     public static String addWimbledonPlayerType() throws IOException{
     	String result = "";
     	
-    	String var_type = "resources/ontologies.xml#Wimbledon2014Player";
-    	String rdf_type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+    	//String var_type = "resources/ontologies.xml#Wimbledon2014Player";
+    	//String rdf_type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
     	String var_person = "?p";
     	String var_name = "?name";
     	
@@ -106,7 +106,6 @@ public class QueryTest {
 		BufferedReader reader = null;
 		reader = new BufferedReader(new FileReader(file));
 		String text = null;	
-		int i = 0;
 		while ((text = reader.readLine()) != null) {
 			try {
 	        	set = qe.execSelect();
@@ -137,7 +136,6 @@ public class QueryTest {
             }
 		   	if(playerRef!=null){
 		   		result+=playerRef+"\n";
-		   		i++;
 		   	}
 		   	else{
 		   		System.out.println("Did not find: "+text);
