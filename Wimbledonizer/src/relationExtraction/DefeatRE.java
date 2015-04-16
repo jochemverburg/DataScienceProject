@@ -35,6 +35,7 @@ public class DefeatRE {
 
 	public static final String RANDOM_REGEX = ".*?";
 	public static final String DEFEAT_REGEX = "(beat|defeat|def\\.|wins)";
+	public static final String DEFEAT_NEWREGEX = "(beat|defeat|def\\.|wins|beats|defeats|win)";
 	public static final String COLUMN_DELIM = "\t";
 	/**
 	 * @require RELATION_SIZE==2
@@ -126,7 +127,7 @@ public class DefeatRE {
 		for(Entry<Pair<String,String>,Integer> entry : defeatMap.entrySet()){
 			Pair<String,String> revertedPair = new Pair<String,String>(entry.getKey().second(),entry.getKey().first());
 			if(entry.getValue()>=minOccurences && 
-					((!entry.getKey().first().equals(entry.getKey().second()) && !defeatMap.keySet().contains(revertedPair)) 
+					!entry.getKey().first().equals(entry.getKey().second()) && ((!defeatMap.keySet().contains(revertedPair)) 
 							|| (defeatMap.keySet().contains(revertedPair) && entry.getValue()>=defeatMap.get(revertedPair)))){	
 				result.add(entry.getKey());
 			}
@@ -134,16 +135,63 @@ public class DefeatRE {
 		return result;
 	}
 	
-	/**
-	 * It doesn't work yet if the name contains a hyphen
-	 * @param tweets
-	 * @param namesInTweets
-	 * @return
-	 */
-	public static Map<Pair<String,String>,Integer>  getDefeatMap(List<String> tweets, List<List<String>> namesInTweets){
+	public static List<String> getWinnerFromMap(Map<Pair<String,String>,Integer> defeatMap){
+		return getWinnerFromMap(defeatMap, 1);
+	}
+	
+	public static List<String> getWinnerFromMap(Map<Pair<String,String>,Integer> defeatMap, int minOccurences){
+		return getWinnerFromDefeatList(getDefeatList(defeatMap, minOccurences));
+	}
+	
+	public static List<String> getWinnerFromDefeatList(List<Pair<String,String>> defeatList){
+		List<String> result = new ArrayList<String>();
+		List<String> losers = new ArrayList<String>();
+		Map<String, Integer> wins = new HashMap<String, Integer>();
+		for(Pair<String,String> defeat : defeatList){
+			String winner = defeat.first();
+			String loser = defeat.second();
+			if(!losers.contains(winner)){
+				if(wins.containsKey(winner)){
+					wins.put(winner, wins.get(winner)+1);
+				}
+				else{
+					wins.put(winner, 1);
+				}
+			}
+			if(!losers.contains(loser)){
+				losers.add(loser);
+				wins.remove(loser);
+			}
+		}
 		
-		Map<Pair<String,String>,Integer> result = new HashMap<Pair<String,String>,Integer>();
+		for(Entry<String, Integer> entry : wins.entrySet()){
+			if(entry.getValue().intValue()>=7){
+				result.add(entry.getKey());
+			}
+		}
 		
+		return result;
+		
+//		List<String> result = new ArrayList<String>();
+//		Map<String, Integer> wins = new HashMap<String, Integer>();
+//		for(Pair<String,String> defeat : defeatList){
+//			boolean foundLoss = false;
+//			String winner = defeat.first();
+//			for(Pair<String,String> defeat2 : defeatList){
+//				if(winner.equals(defeat2.second())){
+//					foundLoss = true;
+//				}
+//			}
+//			if(!result.contains(winner) && !foundLoss){
+//				result.add(winner);
+//			}
+//		}
+//		return result;
+	}
+	
+	public static Pair<Map<Pair<String,String>,Integer>, Map<Pair<String,String>,List<String>>> getDefeatMapAndTweets(List<String> tweets, List<List<String>> namesInTweets){
+		Map<Pair<String,String>,Integer> defeatMap = new HashMap<Pair<String,String>,Integer>();
+		Map<Pair<String,String>,List<String>> tweetMap = new HashMap<Pair<String,String>,List<String>>();
 		//List<Pair<String,String>> result = new ArrayList<Pair<String,String>>();
 		
 		for(int i = 0; i<tweets.size(); i++){
@@ -155,7 +203,11 @@ public class DefeatRE {
 					
 					//Makes sure that it only matches with no persons in between
 					String lookaheadRandom = "((?!"+nameRegex+").)*";
-					String regex = nameRegex+lookaheadRandom+DEFEAT_REGEX+RANDOM_REGEX+nameRegex;
+					//String newRegex = nameRegex+lookaheadRandom+DEFEAT_NEWREGEX+RANDOM_REGEX+nameRegex;
+					//String regex = nameRegex+DEFEAT_NEWREGEX+nameRegex;
+					//String regex = nameRegex+lookaheadRandom+DEFEAT_REGEX+RANDOM_REGEX+nameRegex;
+					
+					String regex = nameRegex+"."+DEFEAT_NEWREGEX+"."+nameRegex;
 					
 					//Has to be used more often so already compile
 					Pattern personPattern = Pattern.compile(nameRegex);
@@ -177,11 +229,15 @@ public class DefeatRE {
 							if(!result.contains(defeatPair)){
 								result.add(defeatPair);
 							}*/
-							if(result.containsKey(defeatPair)){
-								result.put(defeatPair, result.get(defeatPair)+1);
+							if(defeatMap.containsKey(defeatPair)){
+								defeatMap.put(defeatPair, defeatMap.get(defeatPair)+1);
+								tweetMap.get(defeatPair).add(tweet);
 							}
 							else{
-								result.put(defeatPair, 1);
+								defeatMap.put(defeatPair, 1);
+								List<String> temp =new ArrayList<String>();
+								temp.add(tweet);
+								tweetMap.put(defeatPair, temp);
 							}
 						}
 					}
@@ -189,7 +245,17 @@ public class DefeatRE {
 			}
 		}
 		
-		return result;
+		return new Pair<Map<Pair<String,String>,Integer>, Map<Pair<String,String>,List<String>>>(defeatMap, tweetMap);
+	}
+	
+	/**
+	 * It doesn't work yet if the name contains a hyphen
+	 * @param tweets
+	 * @param namesInTweets
+	 * @return
+	 */
+	public static Map<Pair<String,String>,Integer>  getDefeatMap(List<String> tweets, List<List<String>> namesInTweets){
+		return getDefeatMapAndTweets(tweets, namesInTweets).first();
 	}
 	
 	/**

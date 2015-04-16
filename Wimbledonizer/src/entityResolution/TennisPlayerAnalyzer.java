@@ -26,7 +26,7 @@ public class TennisPlayerAnalyzer extends PersonEntityResolution {
 	private List<String> playerURIs;
 	
 	public TennisPlayerAnalyzer(String playerClass) throws Exception{
-		// TODO Make a general implementation
+		// TODO Make a generic implementation, for example using all tennis players
 		super(playerClass);
 		throw new Exception("This constructor does not work yet");
 	}

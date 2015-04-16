@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import classifier.TennisPlayerClassifier;
@@ -40,7 +42,12 @@ public class REAnalyzer {
 	private double precision;
 	private double recall;
 	
+	private Map<Pair<String,String>,List<String>> tweetMap;
+	private Map<Pair<String,String>,List<String>> truePositives;
+	private Map<Pair<String,String>,List<String>> falsePositives;
+	
 	/**
+	 * @requires analyzed and groundtruth both have the same format (for example URIs)
 	 * @param analyzedPath The path containing the extracted relations in described format.
 	 * @param groundTruthPath The path containing the relations of the ground truth in described format.
 	 * @throws IOException 
@@ -111,10 +118,20 @@ public class REAnalyzer {
   		if(precision<0){
 			int total = extractedPairs.size();
 			int TPs = 0;
+			if(tweetMap!=null){
+				truePositives = new HashMap<Pair<String,String>,List<String>>();
+				falsePositives = new HashMap<Pair<String,String>,List<String>>();
+			}
 			
 			for(Pair<String,String> extractedPair : extractedPairs){
 				if(groundTruthPairs.contains(extractedPair)){
 					TPs++;
+					if(tweetMap!=null){
+						truePositives.put(extractedPair, tweetMap.get(extractedPair));
+					}
+				}
+				else if(tweetMap!=null){
+					falsePositives.put(extractedPair, tweetMap.get(extractedPair));
 				}
 			}
 			
@@ -132,6 +149,7 @@ public class REAnalyzer {
 			for(Pair<String,String> groundTruthPair : groundTruthPairs){
 				if(extractedPairs.contains(groundTruthPair)){
 					TPs++;
+					
 				}
 			}
 			
@@ -261,8 +279,48 @@ public class REAnalyzer {
 		//System.out.println(DefeatRE.getDefeatList(defeatMap, 22526).toString());
 	}
 	
+	public static void analyzeWinners(int max) throws IOException{
+		String analyzerClassName = "WimbledonParticipant";
+		String classifiedPath = FIRST_TEST_TEMP+"classifiedTweets.txt";
+		List<String> possibleSubjects = new ArrayList<String>();
+		possibleSubjects.add(analyzerClassName);
+		
+//		Pair<List<String>, List<List<String>>> readFile = DefeatRE.readFile(classifiedPath, possibleSubjects);
+//		Map<Pair<String,String>,Integer> defeatMap = DefeatRE.getDefeatMap(readFile.first(), readFile.second());
+		DefeatRE.printDefeatRelations(classifiedPath, "resources/defeatWith1.txt", possibleSubjects, 1);
+//		for(int i = 1; i<=max; i++){
+//			System.out.println(i+": "+DefeatRE.getWinnerFromMap(defeatMap, i).toString());
+//		}
+		
+	}
+	
+	public static void analyzeFaults() throws IOException{
+		String analyzerClassName = "WimbledonParticipant";
+		String classifiedPath = FIRST_TEST_TEMP+"classifiedTweets.txt";
+		List<String> possibleSubjects = new ArrayList<String>();
+		possibleSubjects.add(analyzerClassName);
+		List<Pair<String,String>> groundTruth = getRelationsFromFile(FIRST_TEST_TEMP+"defeatGroundTruth.txt");
+		
+		Pair<List<String>, List<List<String>>> readFile = DefeatRE.readFile(classifiedPath, possibleSubjects);
+		Pair<Map<Pair<String,String>,Integer>, Map<Pair<String,String>,List<String>>> map = DefeatRE.getDefeatMapAndTweets(readFile.first(), readFile.second());
+		Map<Pair<String,String>,Integer> defeatMap = map.first();
+		
+		REAnalyzer analyzer = new REAnalyzer(DefeatRE.getDefeatList(defeatMap, 100), groundTruth);
+		analyzer.setTweetMap(map.second());
+		double precision = analyzer.getPrecision();
+		for(Entry<Pair<String, String>, List<String>> falsePositive : analyzer.getFalsePositives().entrySet()){
+			/*for(String tweet : falsePositive.getValue()){
+				System.out.println(falsePositive.getKey().toString()+": "+tweet);
+			}*/
+			System.out.println(falsePositive.getKey().toString()+": "+falsePositive.getValue().get(0));
+		}
+				
+	}
+	
 	public static void main(String[] args) throws ClassCastException, ClassNotFoundException, IOException{
-		analyzeREOccurences(FIRST_TEST_OUTPUT+"resultsWithoutDoubles.csv",25000);
+		analyzeREOccurences(FIRST_TEST_OUTPUT+"resultsWithNewRegexWithoutRandom2.csv",25000);
+		//analyzeWinners(100);
+		//analyzeFaults();
 		/*int amount = 1000;
 		double[] recalls = new double[amount+1];
 		double[] precisions = new double[amount+1];
@@ -317,5 +375,29 @@ public class REAnalyzer {
 		w.write("F1 Measure: "+maxF1Measure.toString()+"\n");
 		
 		w.close();*/
+	}
+
+	public Map<Pair<String,String>,List<String>> getTweetMap() {
+		return tweetMap;
+	}
+
+	public void setTweetMap(Map<Pair<String,String>,List<String>> tweetMap) {
+		this.tweetMap = tweetMap;
+	}
+
+	public Map<Pair<String,String>,List<String>> getTruePositives() {
+		return truePositives;
+	}
+
+	public void setTruePositives(Map<Pair<String,String>,List<String>> truePositives) {
+		this.truePositives = truePositives;
+	}
+
+	public Map<Pair<String,String>,List<String>> getFalsePositives() {
+		return falsePositives;
+	}
+
+	public void setFalsePositives(Map<Pair<String,String>,List<String>> falsePositives) {
+		this.falsePositives = falsePositives;
 	}
 }

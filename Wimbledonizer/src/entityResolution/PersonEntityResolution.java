@@ -123,8 +123,7 @@ public abstract class PersonEntityResolution implements EntityResolutionInterfac
 	     * @return The entity-name (usually a dbpedia-link)
 	     */
 	    public static String getEntity(String name, Map<String,List<String>> entityNamesMapping){
-			// TODO Implement using probabilities
-	    	SortedSet<Pair<String, Double>> probabilities = new TreeSet<Pair<String, Double>>(new ProbabilityComparator<String>());
+			SortedSet<Pair<String, Double>> probabilities = new TreeSet<Pair<String, Double>>(new ProbabilityComparator<String>());
 	    	for(Entry<String, List<String>> entity : entityNamesMapping.entrySet()){
 	    		double probability = decideProbability(name, entity.getValue());
 	    		
