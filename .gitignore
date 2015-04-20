@@ -5,6 +5,15 @@
 
 *.class
 
+#extra files
+Wimbledonizer.zip
+Wimbledonizer/resources/firstTest
+Wimbledonizer/resources/firstTestUsed
+Wimbledonizer/resources/Wimbledon2014Tweets.txt
+Wimbledonizer/resources/Wimbledon2014TweetsSmallTestset.txt
+Wimbledonizer/resources/classifiedTweets.txt
+Wimbledonizer/resources/classifiedTweets-temp.txt
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
