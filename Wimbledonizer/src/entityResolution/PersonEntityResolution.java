@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import classifier.EntityResolutionInterface;
+import ner.EntityResolutionInterface;
 import edu.stanford.nlp.util.Pair;
 
 public abstract class PersonEntityResolution implements EntityResolutionInterface{

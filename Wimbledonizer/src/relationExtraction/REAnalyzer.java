@@ -3,7 +3,6 @@ package relationExtraction;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import classifier.TennisPlayerClassifier;
+import ner.TennisPlayerNER;
 import edu.stanford.nlp.util.Pair;
 import entityResolution.TennisPlayerAnalyzer;
 
@@ -228,15 +227,15 @@ public class REAnalyzer {
 	
 	public static REAnalyzer analyzerForWimbledon(int minOccurences) throws IOException, ClassCastException, ClassNotFoundException{
 		String groundTruthDefeats = FIRST_TEST_TEMP+"defeatGroundTruth.txt";
-		//printDefeatURIs(FIRST_TEST_INPUT+"defeated.csv", groundTruthDefeats);
+		printDefeatURIs(FIRST_TEST_INPUT+"defeated.csv", groundTruthDefeats);
 		
 		String analyzerClassName = "WimbledonParticipant";
 		
 		String classifiedPath = FIRST_TEST_TEMP+"classifiedTweets.txt";
-		/*String participantsURIPath = FIRST_TEST_TEMP+"participantsURIs.txt";
+		String participantsURIPath = FIRST_TEST_TEMP+"participantsURIs.txt";
 		//TennisPlayerAnalyzer.printParticipantURIsToPath(FIRST_TEST_INPUT+"participants.txt", 2,  participantsURIPath);
-		TennisPlayerClassifier.classifyTennisPlayers("classifiers/english.conll.4class.distsim.crf.ser.gz", FIRST_TEST_INPUT+"Wimbledon2014Tweets.txt", 3, ";", classifiedPath, participantsURIPath, "WimbledonParticipant");
-		*/
+		TennisPlayerNER.classifyTennisPlayers("classifiers/english.conll.4class.distsim.crf.ser.gz", FIRST_TEST_INPUT+"Wimbledon2014Tweets.txt", 3, ";", classifiedPath, participantsURIPath, "WimbledonParticipant");
+		
 		String realDefeats = FIRST_TEST_OUTPUT+"defeats.txt";
 		List<String> possibleSubjects = new ArrayList<String>();
 		possibleSubjects.add(analyzerClassName);
@@ -276,7 +275,7 @@ public class REAnalyzer {
 			w.write(i+Comma+recall+Comma+precision+Comma+f1measure+Comma+relations+"\n");
 			System.out.println(i+Comma+recall+Comma+precision+Comma+f1measure+Comma+relations);
 		}
-		//System.out.println(DefeatRE.getDefeatList(defeatMap, 22526).toString());
+		w.close();
 	}
 	
 	public static void analyzeWinners(int max) throws IOException{
@@ -285,12 +284,11 @@ public class REAnalyzer {
 		List<String> possibleSubjects = new ArrayList<String>();
 		possibleSubjects.add(analyzerClassName);
 		
-//		Pair<List<String>, List<List<String>>> readFile = DefeatRE.readFile(classifiedPath, possibleSubjects);
-//		Map<Pair<String,String>,Integer> defeatMap = DefeatRE.getDefeatMap(readFile.first(), readFile.second());
-		DefeatRE.printDefeatRelations(classifiedPath, "resources/defeatWith1.txt", possibleSubjects, 1);
-//		for(int i = 1; i<=max; i++){
-//			System.out.println(i+": "+DefeatRE.getWinnerFromMap(defeatMap, i).toString());
-//		}
+		Pair<List<String>, List<List<String>>> readFile = DefeatRE.readFile(classifiedPath, possibleSubjects);
+		Map<Pair<String,String>,Integer> defeatMap = DefeatRE.getDefeatMap(readFile.first(), readFile.second());
+		for(int i = 1; i<=max; i++){
+			System.out.println(i+": "+DefeatRE.getWinnerFromMap(defeatMap, i).toString());
+		}
 		
 	}
 	
@@ -307,74 +305,53 @@ public class REAnalyzer {
 		
 		REAnalyzer analyzer = new REAnalyzer(DefeatRE.getDefeatList(defeatMap, 100), groundTruth);
 		analyzer.setTweetMap(map.second());
-		double precision = analyzer.getPrecision();
+		analyzer.getPrecision();
 		for(Entry<Pair<String, String>, List<String>> falsePositive : analyzer.getFalsePositives().entrySet()){
-			/*for(String tweet : falsePositive.getValue()){
-				System.out.println(falsePositive.getKey().toString()+": "+tweet);
-			}*/
 			System.out.println(falsePositive.getKey().toString()+": "+falsePositive.getValue().get(0));
 		}
 				
 	}
-	
-	public static void main(String[] args) throws ClassCastException, ClassNotFoundException, IOException{
-		analyzeREOccurences(FIRST_TEST_OUTPUT+"resultsWithNewRegexWithoutRandom2.csv",25000);
-		//analyzeWinners(100);
-		//analyzeFaults();
-		/*int amount = 1000;
-		double[] recalls = new double[amount+1];
-		double[] precisions = new double[amount+1];
-		double[] f1measures = new double[amount+1];
-		Pair<Integer, Double> maxRecall = new Pair<Integer, Double>(-1, -1.0);
-		Pair<Integer, Double> maxPrecision = new Pair<Integer, Double>(-1, -1.0);
-		Pair<Integer, Double> maxF1Measure = new Pair<Integer, Double>(-1, -1.0);
+
+	public static void compareSymmetricFiltering(String outputPath, int max) throws IOException{
+		String analyzerClassName = "WimbledonParticipant";
+		String classifiedPath = FIRST_TEST_TEMP+"classifiedTweets.txt";
+		List<String> possibleSubjects = new ArrayList<String>();
+		possibleSubjects.add(analyzerClassName);
+		List<Pair<String,String>> groundTruth = getRelationsFromFile(FIRST_TEST_TEMP+"defeatGroundTruth.txt");
+		
+		Pair<List<String>, List<List<String>>> readFile = DefeatRE.readFile(classifiedPath, possibleSubjects);
+		Map<Pair<String,String>,Integer> defeatMap = DefeatRE.getDefeatMap(readFile.first(), readFile.second());
 		
 		Writer w = new BufferedWriter(
         		new OutputStreamWriter(
         				new FileOutputStream(
-        						new File(FIRST_TEST_OUTPUT+"results.txt"))));
-		
+        						new File(outputPath))));
 		String Comma = ",";
-		w.write("Minimum occurences"+Comma+"Recall"+Comma+"Precision"+Comma+"F1-measure"+Comma+"Nr Relations"+"\n");
+		w.write("Minimum occurences"+Comma+"Recall Without"+Comma+"Precision Without"+Comma+"F1-measure Without"+Comma+"Nr Relations Without"+Comma+"Recall With"+Comma+"Precision With"+Comma+"F1-measure With"+Comma+"Nr Relations With"+"\n");
 		
-		for(int i = 0; i<=amount; i++){
-			REAnalyzer analyzer = analyzerForWimbledon(i);
-			double recall = analyzer.getRecall();
-			double precision = analyzer.getPrecision();
-			double f1measure = analyzer.getFMeasure(1);
-			int relations = analyzer.getAmountOfRelations();
-			System.out.println("Recall "+i+": "+recall[i]);
-			System.out.println("Precision "+i+": "+precision[i]);
-			System.out.println("F1 Measure "+i+": "+f1measure[i]);
-			System.out.println("Relations "+i+": "+relations);
-			w.write("Recall "+i+": "+recall[i]+"\n");
-			w.write("Precision "+i+": "+precision[i]+"\n");
-			w.write("F1 Measure "+i+": "+f1measure[i]+"\n");
-			w.write("Relations "+i+": "+relations+"\n");
-			w.write(i+Comma+recall+Comma+precision+Comma+f1measure+Comma+relations+"\n");
-			System.out.println(i+Comma+recall+Comma+precision+Comma+f1measure+Comma+relations);
-			
-			if(recall[i]>maxRecall.second()){
-				maxRecall = new Pair<Integer, Double>(i, recall[i]);
-			}
-			if(precision[i]>maxPrecision.second()){
-				maxPrecision = new Pair<Integer, Double>(i, precision[i]);
-			}
-			if(f1measure[i]>maxF1Measure.second()){
-				maxF1Measure = new Pair<Integer, Double>(i, f1measure[i]);
-			}
+		//22526 gives: [(http://dbpedia.org/resource/Novak_Djokovic,http://dbpedia.org/resource/Roger_Federer)]
+		for(int i = 0; i<=max; i++){
+			REAnalyzer analyzerWith = new REAnalyzer(DefeatRE.getDefeatList(defeatMap, i), groundTruth);
+			REAnalyzer analyzerWithout =   new REAnalyzer(DefeatRE.getDefeatListWithoutSymmetricFiltering(defeatMap, i), groundTruth);
+			double recallWith = analyzerWith.getRecall();
+			double precisionWith = analyzerWith.getPrecision();
+			double f1measureWith = analyzerWith.getFMeasure(1);
+			int relationsWith = analyzerWith.getAmountOfRelations();
+			double recallWithout = analyzerWithout.getRecall();
+			double precisionWithout = analyzerWithout.getPrecision();
+			double f1measureWithout = analyzerWithout.getFMeasure(1);
+			int relationsWithout = analyzerWithout.getAmountOfRelations();
+			w.write(i+Comma+recallWithout+Comma+precisionWithout+Comma+f1measureWithout+Comma+relationsWithout+Comma+recallWith+Comma+precisionWith+Comma+f1measureWith+Comma+relationsWith+"\n");
+			System.out.println(i+Comma+recallWithout+Comma+precisionWithout+Comma+f1measureWithout+Comma+relationsWithout+Comma+recallWith+Comma+precisionWith+Comma+f1measureWith+Comma+relationsWith);
 		}
-		
-		
-		System.out.println("\n"+"Recall: "+maxRecall.toString());
-		System.out.println("Precision: "+maxPrecision.toString());
-		System.out.println("F1 Measure: "+maxF1Measure.toString());
-
-		w.write("\n"+"Recall: "+maxRecall.toString()+"\n");
-		w.write("Precision: "+maxPrecision.toString()+"\n");
-		w.write("F1 Measure: "+maxF1Measure.toString()+"\n");
-		
-		w.close();*/
+		w.close();
+	}
+	
+	public static void main(String[] args) throws ClassCastException, ClassNotFoundException, IOException{
+		analyzeREOccurences(FIRST_TEST_OUTPUT+"resultsWithRegex2.csv",25000);
+		analyzeWinners(100);
+		analyzeFaults();
+		compareSymmetricFiltering(FIRST_TEST_OUTPUT+"resultsSymmetricFiltering.csv",25000);
 	}
 
 	public Map<Pair<String,String>,List<String>> getTweetMap() {

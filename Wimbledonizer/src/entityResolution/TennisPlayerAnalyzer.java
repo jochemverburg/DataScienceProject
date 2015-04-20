@@ -66,8 +66,6 @@ public class TennisPlayerAnalyzer extends PersonEntityResolution {
 				+ " }";
 		//
 		
-		//System.out.println(playerURI);
-		//.replace("http://dbpedia.org/resource/", "")
 		QueryExecution qeNames = QueryExecutionFactory.sparqlService(DBPEDIA_SPARQL, namesQuery);
 	    QueryExecution qeNLURIs = QueryExecutionFactory.sparqlService(DBPEDIA_SPARQL, nlURIQuery);
 		QueryExecution qeNicks = QueryExecutionFactory.sparqlService(DBPEDIANL_SPARQL, nlNamesQuery);
@@ -91,7 +89,6 @@ public class TennisPlayerAnalyzer extends PersonEntityResolution {
 	            		temp.add(name);
 	            		result.put(playerURI, temp);
 	            	}
-            		//System.out.println(playerURI + " " + name);
 	            }
 
             }
@@ -127,7 +124,6 @@ public class TennisPlayerAnalyzer extends PersonEntityResolution {
 	            		temp.add(name);
 	            		result.put(playerURI, temp);
 	            	}
-            		//System.out.println(playerURI + " " + nlURI + " " + name);
             	}
             }
         }
@@ -156,7 +152,7 @@ public class TennisPlayerAnalyzer extends PersonEntityResolution {
          		+ " "+var_person+" dbpprop:name "+var_name+"."
          		+ " }"
          		+ "";
-        //String query = "ASK { }";
+
         QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
         ResultSet set = null;
         
@@ -179,7 +175,6 @@ public class TennisPlayerAnalyzer extends PersonEntityResolution {
 		   		String var_names = tuple.get(var_name).toString();
                 if(containsNames(var_names,name)){
                 	playerRef = tuple.get(var_person).toString();
-                	//playerRef = "<"+tuple.get(var_person).toString()+"> <"+rdf_type+"> <"+var_type+">";
                 }
             }
 		   	if(playerRef!=null){

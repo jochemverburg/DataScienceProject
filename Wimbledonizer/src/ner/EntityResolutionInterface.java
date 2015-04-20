@@ -1,4 +1,4 @@
-package classifier;
+package ner;
 
 public interface EntityResolutionInterface {
 	

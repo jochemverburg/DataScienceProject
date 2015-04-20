@@ -1,4 +1,4 @@
-package classifier;
+package ner;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 import edu.stanford.nlp.util.Pair;
 import entityResolution.TennisPlayerAnalyzer;
 
-public class TennisPlayerClassifier extends Classifier {
+public class TennisPlayerNER extends NER {
 	
 	/**
 	 * Can classify tennis players using an initial Stanford CRF Classifier, an input file with tweets/sentences and an input of possible subclasses
@@ -27,7 +27,7 @@ public class TennisPlayerClassifier extends Classifier {
 			EntityResolutionInterface analyzer = new TennisPlayerAnalyzer(playerClassPair.first(), playerClassPair.second());
 			analyzers.add(analyzer);
 		}
-		subClassifyClass(initialClassifierPath, tweetPart, delim, inputPath, outputPath, analyzers, SubClassifier.PERSON_ANNOTATION);
+		subClassifyClass(initialClassifierPath, tweetPart, delim, inputPath, outputPath, analyzers, SubNER.PERSON_ANNOTATION);
 	}
 	
 	public static void classifyTennisPlayers(String initialClassifierPath, String inputPath, int tweetPart, String delim, String outputPath, String playersPath, String className) throws IOException, ClassCastException, ClassNotFoundException{

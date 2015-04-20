@@ -1,4 +1,4 @@
-package classifier;
+package ner;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,17 +10,17 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
 /**
- * This class can add classifications to Persons using an already classified file.
+ * This class can add NEs to Persons using an already classified file.
  * Input has to be given as CoNNL:
- * The first column contains the tokens and the second column separated by a tab contains the original classification.
+ * The first column contains the tokens and the second column separated by a tab contains the original NER.
  * Every line represents a different entity, if it has not been classified it can also represent a token.
  * After a tweet/sentence a blank line follows.
  *
  * Output is given the same way
  * 
- * As input the output of #TODO can be used. Besides this implementations of EntityResolutionInterface can be used.
+ * As input the output of NER can be used. Besides this implementations of EntityResolutionInterface can be used.
  */
-public class SubClassifier {
+public class SubNER {
 	
 	public static final String COLUMN_DELIM = "\t";
 	public static final String SENTENCE_SEPARATOR = "\n";

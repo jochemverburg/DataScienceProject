@@ -135,6 +135,17 @@ public class DefeatRE {
 		return result;
 	}
 	
+	public static List<Pair<String,String>> getDefeatListWithoutSymmetricFiltering(Map<Pair<String,String>,Integer> defeatMap, int minOccurences){
+		List<Pair<String,String>> result = new ArrayList<Pair<String,String>>();
+		for(Entry<Pair<String,String>,Integer> entry : defeatMap.entrySet()){
+			if(entry.getValue()>=minOccurences && 
+					!entry.getKey().first().equals(entry.getKey().second())){	
+				result.add(entry.getKey());
+			}
+		}
+		return result;
+	}
+	
 	public static List<String> getWinnerFromMap(Map<Pair<String,String>,Integer> defeatMap){
 		return getWinnerFromMap(defeatMap, 1);
 	}
@@ -171,28 +182,11 @@ public class DefeatRE {
 		}
 		
 		return result;
-		
-//		List<String> result = new ArrayList<String>();
-//		Map<String, Integer> wins = new HashMap<String, Integer>();
-//		for(Pair<String,String> defeat : defeatList){
-//			boolean foundLoss = false;
-//			String winner = defeat.first();
-//			for(Pair<String,String> defeat2 : defeatList){
-//				if(winner.equals(defeat2.second())){
-//					foundLoss = true;
-//				}
-//			}
-//			if(!result.contains(winner) && !foundLoss){
-//				result.add(winner);
-//			}
-//		}
-//		return result;
 	}
 	
 	public static Pair<Map<Pair<String,String>,Integer>, Map<Pair<String,String>,List<String>>> getDefeatMapAndTweets(List<String> tweets, List<List<String>> namesInTweets){
 		Map<Pair<String,String>,Integer> defeatMap = new HashMap<Pair<String,String>,Integer>();
 		Map<Pair<String,String>,List<String>> tweetMap = new HashMap<Pair<String,String>,List<String>>();
-		//List<Pair<String,String>> result = new ArrayList<Pair<String,String>>();
 		
 		for(int i = 0; i<tweets.size(); i++){
 			String tweet = tweets.get(i);
@@ -203,11 +197,11 @@ public class DefeatRE {
 					
 					//Makes sure that it only matches with no persons in between
 					String lookaheadRandom = "((?!"+nameRegex+").)*";
-					//String newRegex = nameRegex+lookaheadRandom+DEFEAT_NEWREGEX+RANDOM_REGEX+nameRegex;
-					//String regex = nameRegex+DEFEAT_NEWREGEX+nameRegex;
-					//String regex = nameRegex+lookaheadRandom+DEFEAT_REGEX+RANDOM_REGEX+nameRegex;
+					//String regex1 = nameRegex+lookaheadRandom+DEFEAT_REGEX+RANDOM_REGEX+nameRegex;
+					//String regex2 = nameRegex+lookaheadRandom+DEFEAT_NEWREGEX+RANDOM_REGEX+nameRegex;
+					//String regex3 = nameRegex+" "+DEFEAT_NEWREGEX+" "+nameRegex;
 					
-					String regex = nameRegex+"."+DEFEAT_NEWREGEX+"."+nameRegex;
+					String regex = nameRegex+lookaheadRandom+DEFEAT_REGEX+RANDOM_REGEX+nameRegex;
 					
 					//Has to be used more often so already compile
 					Pattern personPattern = Pattern.compile(nameRegex);

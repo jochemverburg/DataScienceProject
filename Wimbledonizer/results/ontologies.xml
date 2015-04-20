@@ -1,0 +1,118 @@
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+	<!ENTITY owl  "http://www.w3.org/2002/07/owl#">
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns     ="file:///C:/Users/Jochem/Dropbox/UT/Master/DataScience/DataScienceProject/Wimbledonizer/resources/ontologies.xml#"
+>
+
+<!--http://www.daml.org/2001/01/gedcom/gedcom-->
+<owl:Ontology rdf:about="resources/ontologies.xml">
+</owl:Ontology>
+
+<!--An individual tournament consists of a participant list and a list of results-->
+<owl:Class rdf:ID="IndividualTournament">
+	<owl:equivalentClass>
+		<rdf:Description>
+			<owl:intersectionOf rdf:parseType="Collection">
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#player"/>
+				  <owl:toClass rdf:resource="http://dbpedia.org/ontology/Athlete"/>
+				</owl:Restriction>
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#result"/>
+				  <owl:toClass rdf:resource="#Result"/>
+				</owl:Restriction>
+			</owl:intersectionOf>
+		</rdf:Description>
+	</owl:equivalentClass>
+</owl:Class>
+
+<!--A tennis tournament consists of a list of tennis players, tennisresults and a level. Currently there's no restriction that the people in the results are in the participants list.-->
+<owl:Class rdf:ID="TennisSinglesTournament">
+	<rdfs:subClassOf rdf:resource="#IndividualTournament"/>
+	<owl:equivalentClass>
+		<rdf:Description>
+			<owl:intersectionOf rdf:parseType="Collection">
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#player"/>
+				  <owl:toClass rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
+				</owl:Restriction>
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#result"/>
+				  <owl:toClass rdf:resource="#TennisResult"/>
+				</owl:Restriction>
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#level"/>
+				  <owl:toClass rdf:resource="#TennisLevel"/>
+				  <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+				</owl:Restriction>
+			</owl:intersectionOf>
+		</rdf:Description>
+	</owl:equivalentClass>
+</owl:Class>
+
+<!-- A tennis level belongs to a tour and has a description/name -->
+<owl:Class rdf:ID="TennisLevel">
+	<owl:equivalentClass>
+		<rdf:Description>
+			<owl:intersectionOf rdf:parseType="Collection">
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#tour"/>
+				  <owl:toClass rdf:resource="#TennisTour"/> 
+				  <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+				</owl:Restriction>
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#levelName"/>
+				  <owl:toClass rdf:resource="&xsd;String"/>
+				</owl:Restriction>
+			</owl:intersectionOf>
+		</rdf:Description>
+	</owl:equivalentClass>
+</owl:Class>
+
+<!-- A tennis tour has a name -->
+<owl:Class rdf:ID="TennisTour">
+	<owl:equivalentClass>
+		<rdf:Description>
+			<owl:intersectionOf rdf:parseType="Collection">
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#tourName"/>
+				  <owl:toClass rdf:resource="&xsd;String"/>
+				</owl:Restriction>
+			</owl:intersectionOf>
+		</rdf:Description>
+	</owl:equivalentClass>
+</owl:Class>
+
+<!-- A result is very generic and so only exists because of its sub-classes.-->
+<owl:Class rdf:ID="Result">
+</owl:Class>
+
+<!-- A tennisresult always consists of a winner and a loser, which are both tennisPlayers-->
+<owl:Class rdf:ID="TennisResult">
+	<rdfs:subClassOf rdf:resource="#Result"/>
+	<owl:equivalentClass>
+		<rdf:Description>
+			<owl:intersectionOf rdf:parseType="Collection">
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#winner"/>
+				  <owl:toClass rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
+				</owl:Restriction>
+				<owl:Restriction>
+				  <owl:onProperty rdf:resource="#loser"/>
+				  <owl:toClass rdf:resource="http://dbpedia.org/ontology/TennisPlayer"/>
+				</owl:Restriction>
+			</owl:intersectionOf>
+		</rdf:Description>
+	</owl:equivalentClass>
+</owl:Class>
+
+</rdf:RDF>

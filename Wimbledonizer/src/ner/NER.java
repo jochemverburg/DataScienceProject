@@ -1,4 +1,4 @@
-package classifier;
+package ner;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,10 +23,10 @@ import edu.stanford.nlp.util.Triple;
  * @author Jochem
  *
  */
-public class Classifier extends SubClassifier {
+public class NER extends SubNER {
 	
 	/**
-	 * Combines the steps of both the initial classification and the subclassification, using the Stanford CRF Classifier. Puts the the temporary classification in a file named the same as outputPath with -temp add the end.
+	 * Combines the steps of both the initial NER and the subNER, using the Stanford CRF Classifier. Puts the the temporary NER in a file named the same as outputPath with -temp add the end.
 	 * @param classifierPath
 	 * @param tweetPart
 	 * @param delim
@@ -39,27 +39,27 @@ public class Classifier extends SubClassifier {
 	 * @throws IOException
 	 */
 	public static void subClassifyClass(String classifierPath, int tweetPart, String delim, String inputPath, String outputPath, List<EntityResolutionInterface> analyzers, String classAnnotation) throws ClassCastException, ClassNotFoundException, IOException{
-		//Defines a new path for the initialclassification by adding -temp add the end of the filename
-		String initialClassificationPath = outputPath.substring(0, outputPath.lastIndexOf(".")) + "-temp" + outputPath.substring(outputPath.lastIndexOf("."),outputPath.length());
-		printInitialClassification(classifierPath, tweetPart, delim, inputPath, initialClassificationPath);
-		subClassifyClass(initialClassificationPath, outputPath, analyzers, classAnnotation);
+		//Defines a new path for the initialNER by adding -temp add the end of the filename
+		String initialNERPath = outputPath.substring(0, outputPath.lastIndexOf(".")) + "-temp" + outputPath.substring(outputPath.lastIndexOf("."),outputPath.length());
+		printInitialNER(classifierPath, tweetPart, delim, inputPath, initialNERPath);
+		subClassifyClass(initialNERPath, outputPath, analyzers, classAnnotation);
 	}
 	
 	/**
-	 * Prints the classification of the NLP CRF Classifier which is entered to a file in the right format for the subclassifier.
+	 * Prints the NER of the NLP CRF Classifier which is entered to a file in the right format for the subclassifier.
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 * @throws ClassCastException 
 	 */
-	public static void printInitialClassification(String classifierPath, int tweetPart, String delim, String inputPath, String outputPath) throws ClassCastException, ClassNotFoundException, IOException{
-		printInitialClassification(CRFClassifier.getClassifier(classifierPath), tweetPart, delim, inputPath, outputPath);
+	public static void printInitialNER(String classifierPath, int tweetPart, String delim, String inputPath, String outputPath) throws ClassCastException, ClassNotFoundException, IOException{
+		printInitialNER(CRFClassifier.getClassifier(classifierPath), tweetPart, delim, inputPath, outputPath);
 	}
 	
 	/**
-	 * Prints the classification of the NLP CRF Classifier which is entered to a file in the right format for the subclassifier.
+	 * Prints the NER of the NLP CRF Classifier which is entered to a file in the right format for the subclassifier.
 	 * @throws IOException 
 	 */
-	public static void printInitialClassification(AbstractSequenceClassifier<CoreLabel> classifier, int tweetPart, String delim, String inputPath, String outputPath) throws IOException{
+	public static void printInitialNER(AbstractSequenceClassifier<CoreLabel> classifier, int tweetPart, String delim, String inputPath, String outputPath) throws IOException{
 		List<String> sentences = TweetFileReader.readTweets(inputPath, delim, tweetPart);
 				
 		Writer w = new BufferedWriter(

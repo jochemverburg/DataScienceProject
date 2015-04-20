@@ -1,4 +1,4 @@
-package classifier;
+package ner;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -25,7 +25,6 @@ public class TweetFileReader {
 	 * @throws Exception 
 	   */
 	  public static Pair<List<String>, List<String>> readTweetsWithTruth(String path, int truth, int tweet) throws IOException{
-			//System.out.println("Reading file from path: "+path);
 			File file = new File(path);
 			BufferedReader reader = null;
 			reader = new BufferedReader(new FileReader(file));
@@ -55,7 +54,6 @@ public class TweetFileReader {
 	 * @throws IOException 
 	   */
 	  public static List<String> readTweetsWithDatestamp(String path, int tweetPart) throws IOException{
-			//System.out.println("Reading file from path: "+path);
 		  	final String splitter = ";";
 		  	
 			File file = new File(path);
@@ -96,9 +94,7 @@ public class TweetFileReader {
 	   * @return
 	   * @throws IOException
 	   */
-	  public static List<String> readTweets(String path, String delim, int tweetPart) throws IOException{
-			//System.out.println("Reading file from path: "+path);
-		  	
+	  public static List<String> readTweets(String path, String delim, int tweetPart) throws IOException{		  	
 			File file = new File(path);
 			BufferedReader reader = null;
 			reader = new BufferedReader(new FileReader(file));
